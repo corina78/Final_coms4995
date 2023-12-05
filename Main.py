@@ -115,7 +115,7 @@ if __name__=="__main__":
     # Define the number of units in each layer of the network
     units_in_layer = [784, 256, 128, 10]
 
-    parameters, costs = Model(x_train_flattened, one_hot_encoded_y_train.T, units_in_layer,learning_rate=0.01, num_iterations=50)
+    parameters, costs = Model(x_train_flattened, one_hot_encoded_y_train.T, units_in_layer,learning_rate=0.01, num_iterations=500)
 
     predictions_train = predict(x_train_flattened, parameters)
     predictions_test = predict(x_test_flattened, parameters)
