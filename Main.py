@@ -6,7 +6,7 @@ from preprocessing import prepare_data, one_hot_encode
 from helper_functions import *
 
 
-def Model(X, Y, layers_dims, learning_rate=0.01, num_iterations=1):
+def Model(X, X_test, Y, Y_test, layers_dims, learning_rate=0.01, num_iterations=1):
     """
     Parameters:
     X -- input dataset, shaped (num_features, num_examples)
@@ -21,7 +21,9 @@ def Model(X, Y, layers_dims, learning_rate=0.01, num_iterations=1):
     """
 
     np.random.seed(1)
-    costs = []  # keep track of cost
+    costs_train = []  # keep track of cost
+    costs_test = []
+    iterations = []  # keep track of iterations
 
     # Parameters initialization.
     print("Initializing parameters...")
@@ -35,10 +37,14 @@ def Model(X, Y, layers_dims, learning_rate=0.01, num_iterations=1):
         # Forward propagation: [LINEAR -> RELU]*(L-1) -> LINEAR -> SOFTMAX.
         print("Starting forward propagation...")
         AL, caches = Model_forward(X, parameters)
+        # Forward propagation for testing examples
+        AL_test, caches_test = Model_forward(X_test, parameters)
         print("Forward propagation done!")
 
-        # Compute cost.
-        cost = compute_cost(AL, Y)
+        # Compute cost for training examples.
+        cost_train = compute_cost(AL, Y)
+        # Compute cost for testing examples
+        cost_test = compute_cost(AL_test,Y_test)
         print("Cost computed!")
 
         # Backward propagation.
@@ -51,9 +57,13 @@ def Model(X, Y, layers_dims, learning_rate=0.01, num_iterations=1):
         parameters = update_parameters(parameters, grads, learning_rate)
         print("Parameters updated!")
 
-        costs.append(cost)
+        costs_train.append(cost_train)
+        costs_test.append(cost_test)
+        iterations.append(i)
 
-    return parameters, costs
+
+
+    return parameters, costs_train, costs_test, iterations
 
 
 def predict(X, parameters):
@@ -111,11 +121,25 @@ if __name__=="__main__":
                                                                                             y_test)
     # One hot encode Y ground true values
     one_hot_encoded_y_train = one_hot_encode(y_train_flattened)
+    one_hot_encoded_y_test = one_hot_encode(y_test_flattened)
 
     # Define the number of units in each layer of the network
     units_in_layer = [784, 256, 256, 128, 128, 64, 64, 10]
 
-    parameters, costs = Model(x_train_flattened, one_hot_encoded_y_train.T, units_in_layer,learning_rate=0.01, num_iterations=200)
+    parameters, costs_train, costs_test, iterations = Model(x_train_flattened, x_test_flattened, one_hot_encoded_y_train.T, one_hot_encoded_y_test.T, units_in_layer,learning_rate=0.01, num_iterations=300)
+
+    # Data to save
+    data_to_save = {
+        'costs_train': costs_train,
+        'costs_test': costs_test,
+        'iterations': iterations
+    }
+
+    # Save the data to a file
+    with open('model_costs1.pkl', 'wb') as file:
+        pickle.dump(data_to_save, file)
+
+    print("Data saved successfully.")
 
     predictions_train = predict(x_train_flattened, parameters)
     predictions_test = predict(x_test_flattened, parameters)
