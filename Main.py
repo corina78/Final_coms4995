@@ -124,9 +124,9 @@ if __name__=="__main__":
     one_hot_encoded_y_test = one_hot_encode(y_test_flattened)
 
     # Define the number of units in each layer of the network
-    units_in_layer = [784,128,64, 10]
+    units_in_layer = [784,256,128,10]
 
-    parameters, costs_train, costs_test, iterations = Model(x_train_flattened, x_test_flattened, one_hot_encoded_y_train.T, one_hot_encoded_y_test.T, units_in_layer,learning_rate=0.01, num_iterations=50)
+    parameters, costs_train, costs_test, iterations = Model(x_train_flattened, x_test_flattened, one_hot_encoded_y_train.T, one_hot_encoded_y_test.T, units_in_layer,learning_rate=0.01, num_iterations=100)
 
     # Data to save
     data_to_save = {
@@ -136,7 +136,7 @@ if __name__=="__main__":
     }
 
     # Save the data to a file
-    with open('model_costs2.pkl', 'wb') as file:
+    with open('model_costsMinst' + str(units_in_layer) + str(0.01) + '.pkl', 'wb') as file:
         pickle.dump(data_to_save, file)
 
     print("Data saved successfully.")
