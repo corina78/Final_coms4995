@@ -140,7 +140,7 @@ def davidson_quasi_newton_update(x_train_flattened, parameters, E, k, units_in_l
                     qpT = q.dot(p.T)
                     J = J +  J.multiply(qpT)
                     # save cost and parameters for next iteration
-                    J = parameters['J']
+                    parameters['J'] = J
                     E0 = E
                     #print("cost: ", E0)
 
