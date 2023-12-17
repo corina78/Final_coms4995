@@ -8,10 +8,22 @@ from memory_profiler import profile
 import time
 
 @profile
-def davidson_quasi_newton_update(x_train_flattened, x_test_flattened, parameters, E, cost_list, cost_list_test, k, units_in_layer, epsilon=0.001, max_iterations=10):
+def davidon_quasi_newton_update(x_train_flattened, x_test_flattened, parameters, E, cost_list, cost_list_test, k, units_in_layer, epsilon=0.001, max_iterations=10):
+    """ Performs davidson quasi newton update
+
+    Args: Training and testing sets,
+          initial parameters,
+          initial cost,
+          initial cost list,
+          initial cost list test,
+          initial gradient vector,
+          units in layer,
+          epsilon,
+          max iterations
+
+    Returns: parameters, cost_list, cost_list_test"""
 
     # Initialize variables only once
-
     parameters0 = parameters
     J = parameters0['J'] # initial parameters
     E0 = cost # initial cost before the first forward pass, just the cost related to the initial parameters
@@ -194,7 +206,7 @@ def davidson_quasi_newton_update(x_train_flattened, x_test_flattened, parameters
 
 if __name__ == '__main__':
 
-    # Input data:
+    #################### Input data: #############################
     input_path = '/home/corina/Documents/Math_Machine_Learning/minst'
     training_images_filepath = join(input_path, 'train-images-idx3-ubyte/train-images-idx3-ubyte')
     training_labels_filepath = join(input_path, 'train-labels-idx1-ubyte/train-labels-idx1-ubyte')
@@ -219,7 +231,7 @@ if __name__ == '__main__':
     one_hot_encoded_y_train = one_hot_encode(y_train_flattened)
     one_hot_encoded_y_test = one_hot_encode(y_test_flattened)
 
-    # Define the number of units in each layer of the network
+    ############ Define the number of units in each layer of the network ###############
     units_in_layer = [784, 5, 5, 10]
 
     # Initialize the parameters
@@ -241,7 +253,7 @@ if __name__ == '__main__':
     # Compute the gradients
     grads = Model_backward(AL, one_hot_encoded_y_train.T, caches)
 
-    parameters, cost_list, cost_list_test = davidson_quasi_newton_update(x_train_flattened, x_test_flattened, parameters, cost, cost_list, cost_list_test, grads, units_in_layer, epsilon=0, max_iterations=100)
+    parameters, cost_list, cost_list_test = davidon_quasi_newton_update(x_train_flattened, x_test_flattened, parameters, cost, cost_list, cost_list_test, grads, units_in_layer, epsilon=0, max_iterations=100)
 
     # Structure of the data to save: (parameters, cost_list, cost_list_test)
     Data_to_save ={

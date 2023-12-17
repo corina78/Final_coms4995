@@ -48,7 +48,7 @@ def initialize_parameters_davidon(units_in_layer, dtype=np.float16):
 
 def initialize_parameters(units_in_layer, dtype=np.float16):
     """
-    Initializes network parameters using He initialization, and prepares for Davidson's algorithm
+    Initializes network parameters using He initialization
 
     Args:
     units_in_layer -- python list containing the dimensions of each layer in the network
@@ -56,7 +56,6 @@ def initialize_parameters(units_in_layer, dtype=np.float16):
     Returns:
     parameters -- dictionary containing:
                   Wl, bl -- weight matrix and bias vector for layer l
-                  J -- Initial Jacobian or Hessian approximation
     """
 
     np.random.seed(45)
@@ -120,7 +119,7 @@ def linear_forward(A, W, b):
     b -- bias vector, numpy array of shape (size of the current layer, 1)
 
     Returns:
-    Z -- pre-activation parameter ready to by processed by the selected activation.
+    Z -- pre-activation parameter ready to be processed by the selected activation.
     a cached tuple (A, W, b) ready to compute backward propagation.
     """
     Z = np.dot(W, A) + b
@@ -239,6 +238,7 @@ def linear_backward(dZ, cache):
 
 def linear_activation_backward(dA, cache, activation, Y=None):
    """Parameters:
+
     dA -- post-activation gradient for the existing layer l.
     cache -- tuple containing values (linear_cache, activation_cache).
     activation -- the type of activation utilized in this layer.
@@ -280,7 +280,7 @@ def linear_activation_backward(dA, cache, activation, Y=None):
 
 def Model_backward(AL, Y, caches):
     """
-    Implement the backward propagation for the [LINEAR->RELU] * (L-1) -> LINEAR -> SIGMOID group
+    Implement the backward propagation for the [LINEAR->RELU] * (L-1) -> LINEAR -> SOFTMAX group
 
     Arguments:
     AL -- probability vector, output of the forward propagation (L_model_forward())
@@ -445,6 +445,9 @@ def update_parameters_with_jacobian(params, structure_cache, s):
     return params
 
 def calculate_alpha_p_q_omega(v, mu, m, n, gamma, delta):
+
+    """ Calculates intermediate values as part of Davidon's update rule"""
+
     alpha = v + mu * delta + m**2 * n**2 * gamma
     p = (delta - n**2 * gamma) * m + gamma * v * n
     q = m / (1 + n**2 * gamma) - (mu * v * n) / alpha
@@ -467,6 +470,9 @@ def compute(m,omega):# Calculate the scalar m^T * m
     return u
 
 def calculate_gamma(mu, v, m_square, n_squared, a, b):
+
+    """" Calculates the scalar gamma as part of Davidon's update rule"""
+
     if mu * v < m_square * n_squared and a != 0 and b != 0:
         gamma = np.sqrt(1 - (mu * v) / (m_square * n_squared/ (a*b)))
     return gamma
