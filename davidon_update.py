@@ -8,7 +8,7 @@ from memory_profiler import profile
 import time
 
 @profile
-def davidon_quasi_newton_update(x_train_flattened, x_test_flattened, parameters, E, cost_list, cost_list_test, k, units_in_layer, epsilon=0.001, max_iterations=10):
+def davidon_quasi_newton_update(x_train_flattened, x_test_flattened, parameters, E, cost_list, cost_list_test, k, units_in_layer, epsilon=0.01, max_iterations=10):
     """ Performs davidson quasi newton update
 
     Args: Training and testing sets,
@@ -253,7 +253,7 @@ if __name__ == '__main__':
     # Compute the gradients
     grads = Model_backward(AL, one_hot_encoded_y_train.T, caches)
 
-    parameters, cost_list, cost_list_test = davidon_quasi_newton_update(x_train_flattened, x_test_flattened, parameters, cost, cost_list, cost_list_test, grads, units_in_layer, epsilon=0, max_iterations=100)
+    parameters, cost_list, cost_list_test = davidon_quasi_newton_update(x_train_flattened, x_test_flattened, parameters, cost, cost_list, cost_list_test, grads, units_in_layer, epsilon=0.01, max_iterations=100)
 
     # Structure of the data to save: (parameters, cost_list, cost_list_test)
     Data_to_save ={
